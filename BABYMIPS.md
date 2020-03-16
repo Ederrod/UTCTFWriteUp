@@ -34,11 +34,50 @@ I was not able to recognize any of the assembly, but good thing ghidra has a dec
     // Creating a new string??
     basic_string(abStack128);
     
-    // Function call assing copied global data, with the new strings as arguments... Lets take a look at this data
+    // Function call passing copied global data, with the new strings as arguments... Lets take a look at this data
     FUN_00401164(auStack104,abStack128);
     ~basic_string((basic_string<char,std--char_traits<char>,std--allocator<char>> *)abStack128);
     ~basic_string((basic_string<char,std--char_traits<char>,std--allocator<char>> *)abStack152);
 ```
+This code seems like it is just prompting the user for the flag and reading the input. It also saves global data into a local varaible (auStack104), but what its saving we saw it previously **UNK_004015f4** and it is the address of the letters we had previously seen when looking at the strings of the binary... Hmm and then the local variable where it was saved at gets passed as an argument to a function **FUN_00401164**
+
+```cpp
+void FUN_00401164(int param_1,
+                 basic_string<char,std--char_traits<char>,std--allocator<char>> *param_2)
+
+{
+    int iVar1;
+    basic_ostream *this;
+    uint uVar2;
+    char *pcVar3;
+    uint uStack20;
+
+    iVar1 = size();
+    if (iVar1 == 0x4e) {
+    uStack20 = 0;
+    while (uVar2 = size(), uStack20 < uVar2) {
+      pcVar3 = (char *)operator[](param_2,uStack20);
+      if (((int)*pcVar3 ^ uStack20 + 0x17) != (int)*(char *)(param_1 + uStack20)) {
+        this = operator<<<std--char_traits<char>>((basic_ostream *)&cout,"incorrect");
+        operator<<((basic_ostream<char,std--char_traits<char>> *)this,
+                   endl<char,std--char_traits<char>>);
+        return;
+      }
+      uStack20 = uStack20 + 1;
+    }
+    this = operator<<<std--char_traits<char>>((basic_ostream *)&cout,"correct!");
+    operator<<((basic_ostream<char,std--char_traits<char>> *)this,endl<char,std--char_traits<char>>)
+    ;
+    }
+    else {
+    this = operator<<<std--char_traits<char>>((basic_ostream *)&cout,"incorrect");
+    operator<<((basic_ostream<char,std--char_traits<char>> *)this,endl<char,std--char_traits<char>>)
+    ;
+    }
+    return;
+}
+```
+This function is iterating through each character of the string xoring it by index+0x17, this might be our flag. Lets take the global string that we found earlier and write a script to decrypt it. 
 
 ```python
 flag = [
@@ -56,4 +95,9 @@ seed = 0x17
 for i in range(len(flag)): 
     key = i+seed
     print(chr(flag[i]^key), end="")
+```
+
+And there it is the Flag
+```
+utflag{mips_cpp_gang_5VDm:~`N]ze;\)5%vZ=C'C(r#$q=*efD"ZNY_GX>6&sn.wF8$v*mvA@'}
 ```
