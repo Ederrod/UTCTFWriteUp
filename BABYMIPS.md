@@ -14,10 +14,10 @@ baby: ELF 32-bit MSB executable, MIPS, MIPS32 rel2 version 1 (SYSV), dynamically
 
 Given that this is a MSB executable, I was not able to run it in my Kali machine, so I just quickly jumped into reversing the file. 
 
-When looking at the disassembly of a file I first look at the strings, to see if there is any clue. 
+When looking at the disassembly of a file, I first look at the strings to see if there is any clue. 
 ![Screenshot](images/strings.png)
 
-Looking at the strings we are able to see "incorrect", "correct!" and "enter the flag". Although these are very intriguing what gets my attention are the letters bellow "enter the flag" Leaving that in the back of our mind, lets continue and look at the main function of the disassembly.
+Looking at the strings we are able to see "incorrect", "correct!" and "enter the flag". Although these are very intriguing what gets my attention are the letters below "enter the flag". Leaving that in the back of our mind, lets continue and look at the main function of the disassembly.
 ![Screenshot](images/main.png)
 
 I was not able to recognize any of the assembly, but good thing ghidra has a decompiler. 
@@ -34,7 +34,7 @@ I was not able to recognize any of the assembly, but good thing ghidra has a dec
     // Creating a new string??
     basic_string(abStack128);
     
-    // Function call passing copied global data, with the new strings as arguments... Lets take a look at this data
+    // Function call passing copied global data and the new strings as arguments... Lets take a look at this function
     FUN_00401164(auStack104,abStack128);
     ~basic_string((basic_string<char,std--char_traits<char>,std--allocator<char>> *)abStack128);
     ~basic_string((basic_string<char,std--char_traits<char>,std--allocator<char>> *)abStack152);
